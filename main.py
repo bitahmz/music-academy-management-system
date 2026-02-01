@@ -4,6 +4,7 @@ from teacher import Teacher
 from enrollment import Enrollment
 from schedule import Schedule
 
+
 def show_menu():
     print("\n--- Music Academy Management System ---")
     print("1. Add Student")
@@ -12,11 +13,13 @@ def show_menu():
     print("4. Show Teachers")
     print("5. Enroll Student")
     print("6. Exit")
-    print("7.Show weekly schedule")
-    print("8.Add class to schedule")
+    print("7. Show weekly schedule")
+    print("8. Add class to schedule")
 
+
+# Initialize database and schedule
 create_tables()
-schedule = Schedule() 
+schedule = Schedule()
 schedule.load_from_file()
 
 while True:
@@ -51,12 +54,15 @@ while True:
             print(f"ID: {t[0]} | Name: {t[1]} | Instrument: {t[2]}")
 
     elif choice == "5":
-        student_id = input("Student ID: ")
-        teacher_id = input("Teacher ID: ")
+        try:
+            student_id = int(input("Student ID: "))
+            teacher_id = int(input("Teacher ID: "))
 
-        enrollment = Enrollment(student_id, teacher_id)
-        enrollment.save()
-        print("✔ Enrollment completed")
+            enrollment = Enrollment(student_id, teacher_id)
+            enrollment.save()
+            print("✔ Enrollment completed")
+        except ValueError:
+            print("❌ IDs must be numbers")
 
     elif choice == "6":
         print("Exiting program...")
@@ -66,21 +72,26 @@ while True:
         schedule.show_schedule()
 
     elif choice == "8":
-     print("Days:")
-    for i, d in enumerate(schedule.days):
-        print(f"{i}. {d}")
+        print("Days:")
+        for i, d in enumerate(schedule.days):
+            print(f"{i}. {d}")
 
-    day = int(input("Select day (0-4): "))
+        try:
+            day = int(input("Select day (0-4): "))
 
-    print("Time slots:")
-    for i, t in enumerate(schedule.times):
-        print(f"{i}. {t}")
+            print("Time slots:")
+            for i, t in enumerate(schedule.times):
+                print(f"{i}. {t}")
 
-    time = int(input("Select time (0-3): "))
-    info = input("Enter class info (Student - Instrument - Teacher): ")
+            time = int(input("Select time (0-3): "))
+            info = input("Enter class info (Student - Instrument - Teacher): ")
 
-    schedule.add_class(day, time, info)
-    schedule.save_to_file()
-    print("Class added and saved.")
-else:
-    print("❌ Invalid choice")
+            schedule.add_class(day, time, info)
+            schedule.save_to_file()
+            print("✔ Class added and saved")
+
+        except ValueError:
+            print("❌ Invalid input. Please enter numbers correctly.")
+
+    else:
+        print("❌ Invalid choice, please try again") 
